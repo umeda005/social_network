@@ -1,0 +1,9 @@
+fastapi
+pytest
+httpx
+uvicorn
+sqlalchemy
+pydantic
+python-jose
+passlib
+python-multipart
