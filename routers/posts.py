@@ -28,3 +28,37 @@ def create_post(post: Post, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_post)
     return new_post
+
+@router.put("/{post_id}")
+def update_post(
+    post_id: int,
+    post: PostUpdate,
+    db: Session = Depends(get_db)
+):
+    db_post = db.query(PostDB).filter(PostDB.id == post_id).first()
+
+    if not db_post:
+        raise HTTPException(status_code=404, detail="Пост не найден")
+
+    if post.content is not None:
+        db_post.content = post.content
+
+    db.commit()
+    db.refresh(db_post)
+    return db_post
+
+@router.delete("/{post_id}")
+def delete_post(
+    post_id: int,
+    db: Session = Depends(get_db)
+):
+    db_post = db.query(PostDB).filter(PostDB.id == post_id).first()
+
+    if not db_post:
+        raise HTTPException(status_code=404, detail="Пост не найден")
+
+    db.delete(db_post)
+    db.commit()
+
+    return {"detail": "Пост удалён"}
+
